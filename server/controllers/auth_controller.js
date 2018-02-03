@@ -1,16 +1,23 @@
 // TODO hook users to get from database
-const users = require('../models/users');
-let id = 1
+// const users = require('../models/users');
+// let id = 1
+// this is the conncetion to database
+
 
 module.exports={
     login: (req, res, next)=>{
-        const user = users.find(user=> user.username === req.body.username && user.password === req.body.password)
-        if (user){
-            req.session.user.username = user.username;
-            res.status(200).send(req.session.user);
-        } else {
-            res.status(500).send('Unauthorized user Denied')
-        }
+        // hook up connection to database
+        const database = req.app.get('db')
+        // run query to database passing in variable[username, password] then with that db response do stuff
+        database.getUser([req.body.username, req.body.password]).then((dbResponse)=>{
+            if (dbResponse.length!==0){
+                req.session.user.username = dbResponse[0].username;
+                req.session.user.id = dbResponse[0].id
+                res.status(200).send(req.session.user);
+            } else {
+                res.status(401).send('Denied yeah!')
+            }
+        })
     },
     signout: (req, res, next)=>{
         req.session.destroy()

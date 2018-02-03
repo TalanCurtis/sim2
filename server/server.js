@@ -38,6 +38,7 @@ app.get('/api/properties', (req, res, next )=>{
     })
 })
 
+
 //// Auth Controller
 app.post('/api/login', auth_controller.login)
 app.post('/api/register', auth_controller.register)
